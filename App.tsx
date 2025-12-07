@@ -80,7 +80,7 @@ const App: React.FC = () => {
     return window.crypto.subtle.deriveKey(
       {
         name: "PBKDF2",
-        salt: salt,
+        salt: salt as any, // Cast to any to avoid TS ArrayBuffer/SharedArrayBuffer mismatch
         iterations: 100000,
         hash: "SHA-256"
       },
@@ -101,7 +101,7 @@ const App: React.FC = () => {
     const encodedData = enc.encode(data);
     
     const encrypted = await window.crypto.subtle.encrypt(
-      { name: "AES-GCM", iv: iv },
+      { name: "AES-GCM", iv: iv as any }, // Cast to any to avoid TS mismatch
       key,
       encodedData
     );
@@ -128,7 +128,7 @@ const App: React.FC = () => {
       const key = await getKey(keyMaterial, salt);
 
       const decrypted = await window.crypto.subtle.decrypt(
-        { name: "AES-GCM", iv: iv },
+        { name: "AES-GCM", iv: iv as any }, // Cast to any to avoid TS mismatch
         key,
         data
       );
