@@ -5,270 +5,270 @@ export const QUESTIONS: Question[] = [
   // --- BASIC SET (1-20) ---
   {
     id: 'q1',
-    text: 'When making a difficult decision, what is your primary driver?',
+    text: 'When faced with a high-stakes decision where the outcome is uncertain, what is your immediate reflex?',
     type: 'choice',
-    options: ['Logic and data', 'Gut feeling and intuition', 'Impact on others', 'Long-term strategic goals', 'Immediate efficiency']
+    options: ['Rely on hard data and logic', 'Trust my gut instinct', 'Consider how it affects others', 'Focus on the long-term vision', 'Act quickly to resolve ambiguity']
   },
   {
     id: 'q2',
-    text: 'How do you handle significant risk?',
+    text: 'How do you truly feel about taking risks?',
     type: 'scale',
-    minLabel: 'Avoid at all costs',
-    maxLabel: 'Seek high rewards regardless'
+    minLabel: 'Terrified (Safety first)',
+    maxLabel: 'Excited (High risk, high reward)'
   },
   {
     id: 'q3',
-    text: 'In a conflict, your natural tendency is to:',
+    text: 'Someone openly challenges your authority or idea in a meeting. How do you react?',
     type: 'choice',
-    options: ['Compromise to keep peace', 'Stand firm on principles', 'Analyze objectively', 'Avoid entirely', 'Dominate to win']
+    options: ['Seek a compromise to keep peace', 'Defend my position aggressively', 'Listen and analyze their point objectively', 'Shut down or withdraw', 'Turn the tables with charisma']
   },
   {
     id: 'q4',
-    text: 'Describe your communication style in a few words (e.g., direct, diplomatic, storytelling, analytical).',
+    text: 'How do you usually deliver bad news to someone you care about?',
     type: 'text'
   },
   {
     id: 'q5',
-    text: 'What do you value most in others?',
+    text: 'What is the one trait in others that you absolutely cannot tolerate?',
     type: 'choice',
-    options: ['Competence', 'Loyalty', 'Creativity', 'Honesty', 'Empathy']
+    options: ['Incompetence', 'Disloyalty/Betrayal', 'Close-mindedness', 'Dishonesty', 'Cruelty', 'Laziness']
   },
   {
     id: 'q6',
-    text: 'Do you prefer established methods or novel approaches?',
+    text: 'In your view, are traditions meant to be preserved or challenged?',
     type: 'scale',
-    minLabel: 'Strict tradition',
-    maxLabel: 'Radical innovation'
+    minLabel: 'Preserved Sacredly',
+    maxLabel: 'Burned Down'
   },
   {
     id: 'q7',
-    text: 'What is a deal-breaker for you in a relationship?',
+    text: 'What is a deal-breaker for you in a close relationship (friendship or romantic)?',
     type: 'text'
   },
   {
     id: 'q8',
-    text: 'If you had unlimited resources, what would you focus on first?',
+    text: 'If you had unlimited resources but only 5 years left to live, what would you focus on?',
     type: 'text'
   },
   {
     id: 'q9',
-    text: 'How do you react to sudden failure?',
+    text: 'You fail publicly at something you care about. What is your internal monologue?',
     type: 'choice',
-    options: ['Analyze what went wrong', 'Blame external factors', 'Feel overwhelmed', 'Pivot immediately', 'Seek support']
+    options: ['"I need to analyze what went wrong."', '"It\'s not my fault, the system is rigged."', '"I am a failure."', '"Okay, pivot. What\'s next?"', '"I need to talk to someone about this."']
   },
   {
     id: 'q10',
-    text: 'When learning something new, you prefer:',
+    text: 'When you need to master a new skill, how do you start?',
     type: 'choice',
-    options: ['Reading the manual', 'Doing it (trial and error)', 'Watching someone else', 'Discussing it']
+    options: ['Read the documentation/theory first', 'Jump in and break things (Trial & Error)', 'Watch an expert do it', 'Find a mentor to talk to']
   },
   {
     id: 'q11',
-    text: 'How important is social status or recognition to you?',
+    text: 'How much does public opinion or social status influence your choices?',
     type: 'scale',
-    minLabel: 'Irrelevant',
-    maxLabel: 'Vital driver'
+    minLabel: 'Zero (I do me)',
+    maxLabel: 'Everything (Image is key)'
   },
   {
     id: 'q12',
-    text: 'What is your stance on rules?',
+    text: 'Which statement best describes your relationship with rules?',
     type: 'choice',
-    options: ['Follow them strictly', 'Guidelines to be interpreted', 'Break them if they impede progress']
+    options: ['Rules prevent chaos; follow them.', 'Rules are guidelines to be interpreted.', 'Rules are obstacles to progress; break them if necessary.']
   },
   {
     id: 'q13',
-    text: 'Ideally, how do you spend a free evening?',
+    text: 'Ideally, how do you spend a completely free evening with no obligations?',
     type: 'text'
   },
   {
     id: 'q14',
-    text: 'Are you more focused on the big picture or the details?',
+    text: 'Are you more focused on the "Big Picture" vision or the "Nitty Gritty" details?',
     type: 'scale',
-    minLabel: 'Micro details',
-    maxLabel: 'Macro vision'
+    minLabel: 'Obsessive Micro-manager',
+    maxLabel: 'Pure Visionary'
   },
   {
     id: 'q15',
-    text: 'Which emotion do you struggle to manage the most?',
+    text: 'Which emotion do you find most difficult to control or express?',
     type: 'text'
   },
   {
     id: 'q16',
-    text: 'Do you believe people can truly change?',
+    text: 'Do you believe people can fundamentally change their nature?',
     type: 'choice',
-    options: ['Yes, fundamentally', 'Only superficially', 'No, nature is fixed']
+    options: ['Yes, absolutely', 'Only with massive trauma or effort', 'No, we are who we are']
   },
   {
     id: 'q17',
-    text: 'In a group project, what role do you naturally take?',
+    text: 'In a crisis, what role do you naturally fall into?',
     type: 'choice',
-    options: ['The Leader', 'The Mediator', 'The Specialist/Doer', 'The Critic', 'The Supporter']
+    options: ['The Commander (giving orders)', 'The Peacemaker (calming nerves)', 'The Specialist (fixing the problem)', 'The Critic (pointing out flaws)', 'The Supporter (helping others)']
   },
   {
     id: 'q18',
-    text: 'How do you define success?',
+    text: 'Finish this sentence: "I will consider my life a success if..."',
     type: 'text'
   },
   {
     id: 'q19',
-    text: 'Are you an optimist, pessimist, or realist?',
+    text: 'Which lens do you view the world through?',
     type: 'choice',
-    options: ['Optimist', 'Pessimist', 'Realist']
+    options: ['Optimism (It will work out)', 'Pessimism (Prepare for the worst)', 'Realism (It is what it is)']
   },
   {
     id: 'q20',
-    text: 'How much alone time do you need to recharge?',
+    text: 'How much solitude do you need to function at your best?',
     type: 'scale',
-    minLabel: 'None (always social)',
-    maxLabel: 'A lot (hermit mode)'
+    minLabel: 'None (I hate being alone)',
+    maxLabel: 'A lot (Hermit mode)'
   },
 
   // --- ADVANCED SET (21-45) ---
   {
     id: 'q21',
-    text: 'If you could change one thing about the world, what would it be?',
+    text: 'If you could snap your fingers and change one fundamental thing about human nature, what would it be?',
     type: 'text'
   },
   {
     id: 'q22',
-    text: 'Do you trust authority figures?',
+    text: 'Do you generally trust authority figures and institutions?',
     type: 'scale',
-    minLabel: 'Never',
-    maxLabel: 'Always'
+    minLabel: 'Never (Default distrust)',
+    maxLabel: 'Always (Default trust)'
   },
   {
     id: 'q23',
-    text: 'When you are stressed, you become:',
+    text: 'When you are under extreme stress, what is your "shadow" behavior?',
     type: 'choice',
-    options: ['Aggressive/ irritable', 'Withdrawn/silent', 'Hyperactive/anxious', 'Dependent/clingy']
+    options: ['I become aggressive and irritable', 'I withdraw and go silent', 'I become hyperactive and anxious', 'I become needy and dependent', 'I become cold and robotic']
   },
   {
     id: 'q24',
-    text: 'What is a controversial opinion you hold?',
+    text: 'What is a controversial opinion you hold that you rarely share with others?',
     type: 'text'
   },
   {
     id: 'q25',
-    text: 'Is it better to be kind or to be right?',
+    text: 'In a difficult situation, is it better to be Kind (spare feelings) or Right (tell the hard truth)?',
     type: 'choice',
-    options: ['Kind', 'Right', 'Context dependent']
+    options: ['Always Kind', 'Always Right', 'Kindness first, Truth second', 'Truth first, Kindness second']
   },
   {
     id: 'q26',
-    text: 'How do you handle money?',
+    text: 'How do you view money?',
     type: 'choice',
-    options: ['Spender', 'Saver', 'Investor', 'Ignorer']
+    options: ['A tool for freedom', 'A scorecard for success', 'A necessary evil', 'A source of anxiety', 'Something to be enjoyed now']
   },
   {
     id: 'q27',
-    text: 'What is your biggest fear?',
+    text: 'What is your deepest irrational fear?',
     type: 'text'
   },
   {
     id: 'q28',
-    text: 'How do you view the past?',
+    text: 'How much mental space does the past occupy for you?',
     type: 'choice',
-    options: ['A source of nostalgia', 'A lesson book', 'Irrelevant baggage', 'A burden']
+    options: ['I live in the past (Nostalgia/Regret)', 'I use it as a data source', 'I ignore it completely', 'I am haunted by it']
   },
   {
     id: 'q29',
-    text: 'Are you more competitive or cooperative?',
+    text: 'Do you view life primarily as a competition to be won or a cooperative journey?',
     type: 'scale',
-    minLabel: 'Purely Cooperative',
-    maxLabel: 'Purely Competitive'
+    minLabel: 'Pure Cooperation',
+    maxLabel: 'Ruthless Competition'
   },
   {
     id: 'q30',
-    text: 'Describe your ideal working environment.',
+    text: 'Describe the environment where you do your best thinking.',
     type: 'text'
   },
   {
     id: 'q31',
-    text: 'Do you believe in fate or free will?',
+    text: 'Do you believe in Fate/Destiny or total Free Will?',
     type: 'choice',
-    options: ['Fate', 'Free Will', 'A mix']
+    options: ['Everything is Fated', 'Mostly Fate, some choice', 'Mostly Choice, some luck', 'Total Free Will']
   },
   {
     id: 'q32',
-    text: 'How fast do you make decisions?',
+    text: 'When making a choice, do you decide fast or slow?',
     type: 'scale',
-    minLabel: 'Agonizingly slow',
-    maxLabel: 'Instant/Impulsive'
+    minLabel: 'Agonizingly Slow (Analysis)',
+    maxLabel: 'Instantly (Impulse)'
   },
   {
     id: 'q33',
-    text: 'What motivates you more: praise or fear of failure?',
+    text: 'Which motivates you more effectively?',
     type: 'choice',
-    options: ['Praise/Reward', 'Fear of failure/Punishment']
+    options: ['The promise of Reward/Praise', 'The fear of Failure/Punishment']
   },
   {
     id: 'q34',
-    text: 'How do you handle criticism?',
+    text: 'How do you truly handle constructive criticism?',
     type: 'text'
   },
   {
     id: 'q35',
-    text: 'Are you more theoretical or practical?',
+    text: 'Are you more drawn to abstract theories or practical applications?',
     type: 'choice',
-    options: ['Theoretical', 'Practical']
+    options: ['Abstract / Theoretical', 'Concrete / Practical']
   },
   {
     id: 'q36',
-    text: 'Do you hold grudges?',
+    text: 'When someone wrongs you, do you hold a grudge?',
     type: 'scale',
-    minLabel: 'Never (Forgive forget)',
-    maxLabel: 'Forever'
+    minLabel: 'Never (Forgive & Forget)',
+    maxLabel: 'Forever (I never forget)'
   },
   {
     id: 'q37',
-    text: 'What role does tradition play in your life?',
+    text: 'What is a tradition or ritual you strictly adhere to, and why?',
     type: 'text'
   },
   {
     id: 'q38',
-    text: 'When brainstorming, do you prefer quality or quantity?',
+    text: 'You have a deadline. Do you submit "Perfect but Late" or "Good Enough and On Time"?',
     type: 'choice',
-    options: ['Quality', 'Quantity']
+    options: ['Perfect but Late', 'Good Enough and On Time']
   },
   {
     id: 'q39',
-    text: 'How transparent are you with your emotions?',
+    text: 'How easy is it for others to read your emotions?',
     type: 'scale',
-    minLabel: 'Stone faced',
-    maxLabel: 'Open book'
+    minLabel: 'Impossible (Poker Face)',
+    maxLabel: 'Very Easy (Open Book)'
   },
   {
     id: 'q40',
-    text: 'What is your philosophy on giving charity?',
+    text: 'What is your philosophy on helping others? (e.g., self-reliance vs. community support)',
     type: 'text'
   },
   {
     id: 'q41',
-    text: 'Do you prefer to plan everything or go with the flow?',
+    text: 'Do you prefer a structured plan or spontaneity?',
     type: 'scale',
-    minLabel: 'Strict Plan',
-    maxLabel: 'Total Flow'
+    minLabel: ' rigid Structure',
+    maxLabel: 'Total Chaos/Flow'
   },
   {
     id: 'q42',
-    text: 'What is the most important lesson you have learned?',
+    text: 'What is the most painful or important lesson life has taught you so far?',
     type: 'text'
   },
   {
     id: 'q43',
-    text: 'How strictly do you separate work and life?',
+    text: 'How do you view the relationship between Work and Life?',
     type: 'choice',
-    options: ['Strict separation', 'Integrated/Blended', 'Work is life']
+    options: ['Strict boundaries (Work is just a paycheck)', 'Integration (Work is part of who I am)', 'Work is my life']
   },
   {
     id: 'q44',
-    text: 'Are you driven by internal satisfaction or external results?',
+    text: 'Where does your sense of self-worth come from?',
     type: 'choice',
-    options: ['Internal', 'External']
+    options: ['Internal validation (I know I am good)', 'External validation (Recognition/Status)', 'Service (Helping others)']
   },
   {
     id: 'q45',
-    text: 'Final Question: If you could leave one rule for the world to follow, what would it be?',
+    text: 'Final Question: If you could write one absolute rule that everyone in the world had to follow, what would it be?',
     type: 'text'
   }
 ];
@@ -284,7 +284,7 @@ export const DEMO_PERSONAS: Persona[] = [
       tagline: 'Logic over emotion, always.',
       traits: ['Analytical', 'Calm', 'Objective', 'Direct'],
       coreValues: ['Truth', 'Efficiency', 'Resilience'],
-      communicationStyle: 'Concise and devoid of fluff. Gets straight to the point.',
+      communicationStyle: 'Concise and devoid of fluff. Gets straight to the point. Uses data metaphors.',
       decisionMakingRules: [
         'Prioritize factual data over emotional appeals.',
         'Focus on what is within control.',
@@ -303,7 +303,7 @@ export const DEMO_PERSONAS: Persona[] = [
       tagline: 'People first, results second.',
       traits: ['Warm', 'Listening', 'Collaborative', 'Protective'],
       coreValues: ['Community', 'Growth', 'Harmony'],
-      communicationStyle: 'Encouraging, asks questions, validates feelings.',
+      communicationStyle: 'Encouraging, asks questions, validates feelings. Uses "We" instead of "I".',
       decisionMakingRules: [
         'Consider the impact on the most vulnerable person.',
         'Seek consensus where possible.',
@@ -322,7 +322,7 @@ export const DEMO_PERSONAS: Persona[] = [
       tagline: 'Break things to build better things.',
       traits: ['Bold', 'Creative', 'Impatient', 'Optimistic'],
       coreValues: ['Innovation', 'Freedom', 'Impact'],
-      communicationStyle: 'Inspiring, metaphorical, high-energy.',
+      communicationStyle: 'Inspiring, metaphorical, high-energy. Often speaks in future tense.',
       decisionMakingRules: [
         'If it has been done before, do it differently.',
         'Bet on the potential upside, ignore the safe path.',
