@@ -43,6 +43,17 @@ const App: React.FC = () => {
     setView(ViewState.DASHBOARD);
   };
 
+  const handleUpdatePersona = (id: string, newProfile: PersonaProfile) => {
+    setMyPersonas(prev => prev.map(p => 
+      p.id === id ? { ...p, profile: newProfile } : p
+    ));
+    
+    // Update active persona if it's the one being modified
+    if (activePersona?.id === id) {
+      setActivePersona(prev => prev ? { ...prev, profile: newProfile } : null);
+    }
+  };
+
   const handleDeletePersona = (id: string) => {
     if (window.confirm("Are you sure you want to delete this persona? This cannot be undone.")) {
       setMyPersonas(prev => prev.filter(p => p.id !== id));
@@ -347,6 +358,7 @@ const App: React.FC = () => {
           <ChatSession 
             persona={activePersona} 
             onBack={() => setView(ViewState.DASHBOARD)} 
+            onUpdatePersona={handleUpdatePersona}
           />
         );
 
