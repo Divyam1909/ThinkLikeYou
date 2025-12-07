@@ -54,11 +54,19 @@ const ChatSession: React.FC<ChatSessionProps> = ({ persona, onBack }) => {
       };
 
       setMessages(prev => [...prev, modelMsg]);
-    } catch (err) {
+    } catch (err: any) {
+      console.error(err);
+      let errorText = "I'm having trouble connecting to my thought process right now. Please check the API key or try again.";
+      
+      // Handle rate limit errors specifically in UI
+      if (err?.status === 429 || (err?.message && err.message.includes('429'))) {
+         errorText = "I'm thinking too fast! The system is cooling down (Rate Limit). Please wait a moment and try again.";
+      }
+
       const errorMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
         role: 'model',
-        text: "I'm having trouble connecting to my thought process right now. Please check the API key or try again.",
+        text: errorText,
         timestamp: Date.now()
       };
       setMessages(prev => [...prev, errorMsg]);
