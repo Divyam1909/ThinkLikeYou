@@ -11,10 +11,10 @@ const ProfileViewer: React.FC<ProfileViewerProps> = ({ persona, onBack, onChat }
   const { profile } = persona;
 
   return (
-    <div className="max-w-3xl mx-auto py-6">
+    <div className="max-w-3xl mx-auto py-2 md:py-6">
       <button 
         onClick={onBack} 
-        className="flex items-center gap-2 text-slate-400 hover:text-white mb-6 transition-colors"
+        className="flex items-center gap-2 text-slate-400 hover:text-white mb-4 md:mb-6 transition-colors text-sm md:text-base"
       >
         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
         Back to Dashboard
@@ -22,13 +22,13 @@ const ProfileViewer: React.FC<ProfileViewerProps> = ({ persona, onBack, onChat }
 
       <div className="bg-slate-800 border border-slate-700 rounded-2xl overflow-hidden shadow-2xl">
         {/* Header Banner */}
-        <div className="bg-gradient-to-r from-indigo-900 to-slate-900 p-8 border-b border-slate-700">
-          <div className="flex justify-between items-start">
+        <div className="bg-gradient-to-r from-indigo-900 to-slate-900 p-6 md:p-8 border-b border-slate-700">
+          <div className="flex flex-col md:flex-row justify-between items-start gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-white mb-2">{profile.name}</h1>
-              <p className="text-indigo-300 font-medium text-lg italic">"{profile.tagline}"</p>
+              <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">{profile.name}</h1>
+              <p className="text-indigo-300 font-medium text-base md:text-lg italic">"{profile.tagline}"</p>
             </div>
-            <div className="bg-slate-900/50 backdrop-blur border border-white/10 px-4 py-2 rounded-lg text-center">
+            <div className="bg-slate-900/50 backdrop-blur border border-white/10 px-4 py-2 rounded-lg text-center self-start md:self-auto">
               <span className="block text-xs text-slate-400 uppercase tracking-wider">Risk Level</span>
               <span className={`font-bold ${
                 profile.riskTolerance === 'High' ? 'text-red-400' : 
@@ -41,14 +41,14 @@ const ProfileViewer: React.FC<ProfileViewerProps> = ({ persona, onBack, onChat }
         </div>
 
         {/* Content */}
-        <div className="p-8 space-y-8">
+        <div className="p-6 md:p-8 space-y-6 md:space-y-8">
           
           {/* Traits */}
           <section>
             <h3 className="text-slate-400 text-xs font-bold uppercase tracking-widest mb-4">Personality Traits</h3>
             <div className="flex flex-wrap gap-3">
               {profile.traits.map((trait, i) => (
-                <span key={i} className="px-4 py-2 bg-slate-900 border border-slate-700 rounded-full text-slate-200">
+                <span key={i} className="px-4 py-2 bg-slate-900 border border-slate-700 rounded-full text-slate-200 text-sm md:text-base">
                   {trait}
                 </span>
               ))}
@@ -74,7 +74,7 @@ const ProfileViewer: React.FC<ProfileViewerProps> = ({ persona, onBack, onChat }
               {profile.decisionMakingRules.map((rule, i) => (
                 <li key={i} className="flex gap-4 items-start bg-slate-900/50 p-4 rounded-xl">
                   <span className="flex-shrink-0 w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs font-bold mt-0.5">{i + 1}</span>
-                  <p className="text-slate-300 leading-relaxed">{rule}</p>
+                  <p className="text-slate-300 leading-relaxed text-sm md:text-base">{rule}</p>
                 </li>
               ))}
             </ul>
@@ -83,12 +83,12 @@ const ProfileViewer: React.FC<ProfileViewerProps> = ({ persona, onBack, onChat }
            {/* Communication Style */}
            <section>
             <h3 className="text-slate-400 text-xs font-bold uppercase tracking-widest mb-4">Communication Style</h3>
-            <div className="bg-slate-900/30 p-6 rounded-xl border border-slate-700/50 italic text-slate-400">
+            <div className="bg-slate-900/30 p-6 rounded-xl border border-slate-700/50 italic text-slate-400 text-sm md:text-base">
               {profile.communicationStyle}
             </div>
           </section>
 
-          <div className="pt-8 flex gap-4">
+          <div className="pt-4 md:pt-8 flex gap-4">
             <button 
               onClick={onChat}
               className="flex-1 py-4 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl font-bold shadow-lg shadow-indigo-900/20 transition-all hover:scale-[1.02]"
