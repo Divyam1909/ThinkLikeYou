@@ -14,12 +14,19 @@ export interface Question {
   options?: string[]; // For choice type
   minLabel?: string; // For scale type
   maxLabel?: string; // For scale type
-  category?: string;
+  min?: number; // For scale range
+  max?: number; // For scale range
+  placeholder?: string; // Helper text for inputs
 }
 
 export interface Answer {
   questionId: string;
   answer: string | number;
+}
+
+export interface PersonaExample {
+  prompt: string;
+  response: string;
 }
 
 // The core abstract persona object (Safe to share)
@@ -31,6 +38,12 @@ export interface PersonaProfile {
   communicationStyle: string;
   decisionMakingRules: string[];
   riskTolerance: 'Low' | 'Moderate' | 'High';
+  // New fields for voice authenticity
+  linguisticQuirks?: string; 
+  commonPhrases?: string[];
+  voiceSamples?: string[]; // Literal strings from the user to mimic
+  microBehaviors?: string[]; // Specific behavioral triggers (e.g. "Uses sarcasm when challenged")
+  examples?: PersonaExample[]; // Q&A pairs for few-shot prompting
 }
 
 export interface Persona {

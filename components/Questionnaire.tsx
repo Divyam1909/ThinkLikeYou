@@ -19,6 +19,7 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ onComplete, onCancel }) =
   const [error, setError] = useState<string | null>(null);
 
   // Filter questions based on mode
+  // Basic = first 20. Advanced = All.
   const targetQuestions = questionMode === 'BASIC' ? QUESTIONS.slice(0, 20) : QUESTIONS;
   const currentQuestion = targetQuestions[currentQIndex];
 
@@ -74,7 +75,7 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ onComplete, onCancel }) =
         <div className="w-16 h-16 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin mb-6"></div>
         <h2 className="text-2xl font-bold mb-2">Synthesizing Your Mindset...</h2>
         <p className="text-slate-400 max-w-md">
-          The AI is analyzing your answers to extract decision-making patterns, values, and tone. 
+          The AI is analyzing your linguistic patterns, decision-making rules, and hidden biases.
           Your raw answers will be discarded immediately after this process.
         </p>
       </div>
@@ -128,7 +129,7 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ onComplete, onCancel }) =
             <div className="w-12 h-12 bg-indigo-500/20 text-indigo-400 rounded-lg flex items-center justify-center mb-4 text-2xl">⚡</div>
             <h3 className="text-xl font-bold text-white mb-2">Basic Profile</h3>
             <p className="text-slate-400 mb-6 flex-1">
-              A quick 20-question scan of your core values and communication style. Good for a general impression.
+              A 20-question scan covering voice samples, core values, and aesthetics. Creates a solid conversational model.
             </p>
             <div className="text-sm font-mono text-slate-500 mb-6">~ 5 Minutes</div>
             <button className="w-full py-3 bg-slate-700 hover:bg-indigo-600 text-white rounded-xl font-semibold transition-colors">
@@ -142,7 +143,7 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ onComplete, onCancel }) =
             <div className="w-12 h-12 bg-purple-500/20 text-purple-400 rounded-lg flex items-center justify-center mb-4 text-2xl">🧬</div>
             <h3 className="text-xl font-bold text-white mb-2">Advanced Profile</h3>
             <p className="text-slate-400 mb-6 flex-1">
-              A deep dive with 45 questions covering specific scenarios, ethics, and emotional triggers. Creates a highly accurate digital twin.
+              A deep dive (~45 questions) into specific behavioral scenarios, hidden quirks, and ethical dilemmas. Creates a highly accurate digital twin.
             </p>
             <div className="text-sm font-mono text-slate-500 mb-6">~ 10-12 Minutes</div>
             <button className="w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl font-semibold transition-colors shadow-lg">
@@ -176,6 +177,21 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ onComplete, onCancel }) =
       </div>
 
       <div className="bg-slate-800/50 border border-slate-700 rounded-2xl p-6 md:p-10 shadow-xl backdrop-blur-sm min-h-[400px] flex flex-col animate-in fade-in slide-in-from-right-4 duration-300">
+        
+        {/* Helper Badge for Question Type */}
+        <div className="mb-4">
+           {currentQuestion.id.startsWith('voice_') && (
+             <span className="bg-pink-500/20 text-pink-300 text-xs px-2 py-1 rounded border border-pink-500/30 uppercase tracking-wider font-bold">
+               Voice Sample
+             </span>
+           )}
+           {currentQuestion.id.includes('behavior') && (
+             <span className="bg-emerald-500/20 text-emerald-300 text-xs px-2 py-1 rounded border border-emerald-500/30 uppercase tracking-wider font-bold">
+               Behavioral Check
+             </span>
+           )}
+        </div>
+
         <h3 className="text-xl md:text-2xl font-medium mb-8 text-slate-100 leading-relaxed">
           {currentQuestion.text}
         </h3>
@@ -184,7 +200,7 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ onComplete, onCancel }) =
           {currentQuestion.type === 'text' && (
             <textarea
               className="w-full bg-slate-900 border border-slate-600 rounded-xl p-4 text-slate-200 focus:ring-2 focus:ring-indigo-500 focus:border-transparent outline-none transition-all resize-none h-40"
-              placeholder="Type your answer here..."
+              placeholder={currentQuestion.placeholder || "Type your answer here..."}
               value={getCurrentAnswer() as string || ''}
               onChange={(e) => handleAnswer(e.target.value)}
             />
@@ -210,21 +226,28 @@ const Questionnaire: React.FC<QuestionnaireProps> = ({ onComplete, onCancel }) =
 
           {currentQuestion.type === 'scale' && (
             <div className="py-8">
-              <input
-                type="range"
-                min="1"
-                max="10"
-                step="1"
-                value={getCurrentAnswer() as number || 5}
-                onChange={(e) => handleAnswer(Number(e.target.value))}
-                className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
-              />
-              <div className="flex justify-between mt-4 text-sm text-slate-400">
-                <span>{currentQuestion.minLabel}</span>
-                <span>{currentQuestion.maxLabel}</span>
+              <div className="relative">
+                <input
+                  type="range"
+                  min={currentQuestion.min || 1}
+                  max={currentQuestion.max || 5} // Default to 5 now for better Likert data
+                  step="1"
+                  value={getCurrentAnswer() as number || Math.ceil((currentQuestion.max || 5) / 2)}
+                  onChange={(e) => handleAnswer(Number(e.target.value))}
+                  className="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                />
+                {/* Tick marks */}
+                <div className="flex justify-between w-full px-1 mt-2">
+                   {[...Array((currentQuestion.max || 5) - (currentQuestion.min || 1) + 1)].map((_, i) => (
+                     <div key={i} className="w-1 h-1 bg-slate-600 rounded-full"></div>
+                   ))}
+                </div>
               </div>
-              <div className="text-center mt-6 font-mono text-indigo-400 text-xl font-bold">
-                {getCurrentAnswer() || 5}
+
+              <div className="flex justify-between mt-4 text-sm font-medium text-slate-400">
+                <span className="max-w-[100px] text-left">{currentQuestion.minLabel}</span>
+                <span className="text-indigo-400 font-bold text-xl">{getCurrentAnswer() || Math.ceil((currentQuestion.max || 5) / 2)}</span>
+                <span className="max-w-[100px] text-right">{currentQuestion.maxLabel}</span>
               </div>
             </div>
           )}

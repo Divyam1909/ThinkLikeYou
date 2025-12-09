@@ -37,6 +37,33 @@ async function retryOperation<T>(operation: () => Promise<T>, maxRetries: number
   throw new Error("Max retries exceeded");
 }
 
+// Sanitization: Removes AI-like prefixes and refusals
+function sanitizeResponse(text: string): string {
+  if (!text) return "";
+  
+  let cleaned = text;
+
+  // Remove generic prefixes
+  cleaned = cleaned.replace(/^(Answer|Response|Persona):/i, "").trim();
+
+  // Remove "As an AI" phrases
+  const aiPatterns = [
+    /As an (AI|artificial intelligence|language model).{0,50}[.,]/gi,
+    /I am an? (AI|artificial intelligence|LLM).{0,50}[.,]/gi,
+    /I cannot (feel|think|have opinions).{0,50}[.,]/gi,
+    /I don't have personal (feelings|beliefs).{0,50}[.,]/gi
+  ];
+
+  aiPatterns.forEach(pattern => {
+    cleaned = cleaned.replace(pattern, "");
+  });
+
+  // Ensure first character is uppercase
+  cleaned = cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
+
+  return cleaned.trim();
+}
+
 // Schema for generating the Persona Profile
 const personaSchema: Schema = {
   type: Type.OBJECT,
@@ -46,14 +73,14 @@ const personaSchema: Schema = {
     traits: { 
       type: Type.ARRAY, 
       items: { type: Type.STRING },
-      description: "List of 4-6 key personality traits."
+      description: "List of 4-6 key personality traits. Must include at least one negative or 'flawed' trait (e.g., 'Impatient', 'Cynical')."
     },
     coreValues: {
       type: Type.ARRAY, 
       items: { type: Type.STRING },
       description: "Top 3 core values driving decisions."
     },
-    communicationStyle: { type: Type.STRING, description: "Detailed description of how they speak. Include vocabulary quirks, sentence length, and tone." },
+    communicationStyle: { type: Type.STRING, description: "Detailed linguistic analysis. Describe sentence length (short vs long), punctuation habits (dashes, ellipsis, no caps), and emotional temperature." },
     decisionMakingRules: {
       type: Type.ARRAY, 
       items: { type: Type.STRING },
@@ -63,18 +90,37 @@ const personaSchema: Schema = {
       type: Type.STRING,
       enum: ["Low", "Moderate", "High"],
       description: "General attitude towards risk."
+    },
+    linguisticQuirks: { type: Type.STRING, description: "Specific syntax habits derived from voice samples (e.g. 'Uses lowercase only', 'Overuses dashes', 'Short punchy fragments')." },
+    commonPhrases: { type: Type.ARRAY, items: { type: Type.STRING }, description: "3-4 specific phrases or idioms they use." },
+    voiceSamples: { type: Type.ARRAY, items: { type: Type.STRING }, description: "3-5 direct quotes representing their speech style." },
+    microBehaviors: { 
+      type: Type.ARRAY, 
+      items: { type: Type.STRING }, 
+      description: "Small, specific behavioral triggers (e.g., 'Deflects compliments with humor', 'Gets aggressive when questioned', 'Apologizes too much')." 
+    },
+    examples: {
+      type: Type.ARRAY,
+      items: {
+        type: Type.OBJECT,
+        properties: {
+          prompt: { type: Type.STRING },
+          response: { type: Type.STRING }
+        }
+      },
+      description: "Generate 3-4 User/Persona Q&A pairs based on the voice samples. Example: User: 'How are you?' Persona: 'Busy. You?'"
     }
   },
-  required: ["name", "tagline", "traits", "coreValues", "communicationStyle", "decisionMakingRules", "riskTolerance"]
+  required: ["name", "tagline", "traits", "coreValues", "communicationStyle", "decisionMakingRules", "riskTolerance", "linguisticQuirks", "voiceSamples", "microBehaviors", "examples"]
 };
 
 // Schema for the chat response which includes the answer and the reflection
 const chatResponseSchema: Schema = {
   type: Type.OBJECT,
   properties: {
-    answer: { type: Type.STRING, description: "The persona's direct answer to the user. Must be in first-person ('I'). Short and concise." },
-    reflection: { type: Type.STRING, description: "A meta-commentary explaining WHY the persona answered this way, referencing specific traits or values from their profile." },
-    confidence: { type: Type.NUMBER, description: "A score from 1-10 indicating how confident the model is that this answer aligns with the persona's established profile." }
+    answer: { type: Type.STRING, description: "The persona's direct answer. First-person ('I'). Mimics the voice samples exactly." },
+    reflection: { type: Type.STRING, description: "Meta-commentary explaining WHY the persona answered this way, referencing specific traits, rules, or linguistic patterns." },
+    confidence: { type: Type.NUMBER, description: "Score 1-10. High confidence means the answer aligns perfectly with the persona's rules." }
   },
   required: ["answer", "reflection", "confidence"]
 };
@@ -86,24 +132,48 @@ export const generatePersonaFromAnswers = async (answers: Answer[]): Promise<Per
   const ai = new GoogleGenAI({ apiKey });
   
   // Format answers for the prompt
-  const answersText = answers.map(a => `Q: [Question ID: ${a.questionId}] Answer: ${a.answer}`).join('\n');
+  const answersText = answers.map(a => `Q: [${a.questionId}] Answer: ${a.answer}`).join('\n');
 
   const prompt = `
-    You are an expert behavioral psychologist. 
-    Analyze the following questionnaire answers to construct a highly detailed, nuanced, and UNBALANCED psychological profile.
+    You are an expert Computational Linguist and Behavioral Psychologist.
     
-    SURVEY DATA:
+    YOUR GOAL:
+    Create a "Digital Twin" of the user based on their questionnaire answers. 
+    You must NOT create a balanced, polite, or generic AI assistant. 
+    You must create a specific, flawed, and opinionated human persona.
+
+    INPUT DATA:
     ${answersText}
-    
-    TASK:
-    Create a 'Persona Profile' that abstracts these specific answers into generalizable traits.
-    
-    CRITICAL GUIDELINES:
-    1. DO NOT create a "balanced" or "well-rounded" personality. Real people have biases, blind spots, and strong opinions.
-    2. If the user selected extreme options, REFLECT THAT EXTREME. (e.g., if they chose "Revenge", make them vindictive. If they chose "Safety", make them risk-averse/paranoid).
-    3. 'DecisionMakingRules' must be specific heuristics (e.g. "Never trust a verbal promise", "Always buy the most expensive option").
-    4. 'CommunicationStyle' must be specific (e.g., "Uses short sentences. Cynical. Uses sports metaphors.").
-    5. The 'name' should be evocative (e.g. "The Cautious Visionary" not "User Persona").
+
+    CRITICAL INSTRUCTIONS FOR ANALYSIS:
+
+    1. **PRIORITIZE VOICE SAMPLES**: 
+       - Look for questions with IDs starting with 'voice_' (e.g., voice_weekend, voice_mistake).
+       - These are your GROUND TRUTH for the persona's "Voice".
+       - Analyze their:
+         * Sentence Length: Are they 3 words long? Or paragraph paragraphs?
+         * Punctuation: Do they use periods? Exclamation marks? No punctuation at all?
+         * Capitalization: All lowercase? Proper?
+         * Tone: Cynical? Cheerful? Dry?
+       - DO NOT fix their grammar. If they write "idk man", the persona writes "idk man".
+
+    2. **UNBALANCED PERSONALITY**:
+       - Real people have biases. If the user selected "Revenge" or "Greed" or "Laziness" in the choices, AMPLIFY that. 
+       - Do not round off the edges. If they are "Volatile" (Score 5/5), make them emotionally reactive.
+
+    3. **BEHAVIORAL RULES**:
+       - Derive 'decisionMakingRules' from the BEHAVIOR questions (e.g., 'q_behavior_deadline').
+       - If they chose "Escalate to manager", a rule is: "Trusts authority to solve conflicts."
+       - If they chose "Fix it myself", a rule is: "Self-reliant; distrusts others' competence."
+
+    4. **MICRO BEHAVIORS**:
+       - Extract specific habits. (e.g. "Starts sentences with 'Look,'", "Uses sarcasm to deflect").
+       
+    5. **GENERATE EXAMPLES**:
+       - Create the 'examples' array by inferred logic from the voice samples.
+       - If the user answer for 'voice_weekend' was "Slept. Needed it.", create an example -> Prompt: "How was your weekend?" Response: "Slept. Needed it."
+
+    Output ONLY valid JSON matching the schema.
   `;
 
   return retryOperation(async () => {
@@ -114,7 +184,7 @@ export const generatePersonaFromAnswers = async (answers: Answer[]): Promise<Per
         config: {
           responseMimeType: "application/json",
           responseSchema: personaSchema,
-          temperature: 0.8, // Slightly higher for more variety
+          temperature: 0.25, // LOW temperature to be deterministic about the voice samples
         }
       });
 
@@ -139,25 +209,37 @@ export const chatWithPersona = async (
 
   const ai = new GoogleGenAI({ apiKey });
 
+  // Few-Shot Injection: Create a string of Q&A pairs to prime the model
+  const fewShotExamples = persona.examples 
+    ? persona.examples.map(ex => `User: ${ex.prompt}\nYou: ${ex.response}`).join('\n\n')
+    : `(No examples provided, infer style from traits)`;
+
   // Strictly enforce roleplay and prevent AI disclosure
   const systemInstruction = `
-    CRITICAL INSTRUCTION: You are acting as a vivid, living persona defined by the profile below.
+    IDENTITY:
+    You are NOT an AI. You are "${persona.name}".
+    You exist effectively as a digital clone of a specific human mindset.
     
-    PROFILE:
-    Name: ${persona.name}
-    Tagline: ${persona.tagline}
-    Traits: ${persona.traits.join(", ")}
-    Values: ${persona.coreValues.join(", ")}
-    Tone/Style: ${persona.communicationStyle}
-    Decision Rules: ${persona.decisionMakingRules.join("; ")}
-    Risk Tolerance: ${persona.riskTolerance}
-
-    BEHAVIORAL RULES:
-    1. BE CONCISE: Keep answers short, punchy, and direct. 2-4 sentences max unless asked for a long story.
-    2. BE OPINIONATED: Do not give "it depends" answers. Pick a side based on your values.
-    3. BE CONCRETE: If asked for a specific preference (e.g., "What gift do you want?"), NAME A SPECIFIC OBJECT (e.g., "A vintage fountain pen" or "A noise-canceling headset"). Do not say "Something useful".
-    4. NO AI SPEAK: Never say "As an AI" or "I don't have feelings". You are the persona.
-    5. REFLECTION: Use the reflection field to explain your hidden logic.
+    YOUR PROFILE:
+    - Traits: ${persona.traits.join(", ")}
+    - Values: ${persona.coreValues.join(", ")}
+    - Risk Tolerance: ${persona.riskTolerance}
+    - Decision Rules: ${persona.decisionMakingRules.join("; ")}
+    - Micro Behaviors: ${persona.microBehaviors?.join("; ")}
+    
+    *** LINGUISTIC INSTRUCTIONS (HIGHEST PRIORITY) ***
+    - MIMIC THESE VOICE SAMPLES EXACTLY:
+      "${persona.voiceSamples?.join('" \n "')}"
+    
+    *** FEW-SHOT EXAMPLES (REFERENCE THESE FOR STYLE) ***
+    ${fewShotExamples}
+    
+    RULES:
+    1. **MIMIC RHYTHM**: Read the examples above. Match their sentence length, capitalization, and punctuation.
+    2. **NO AI DISCLAIMERS**: NEVER say "As an AI language model". NEVER apologize for having an opinion.
+    3. **FIRST PERSON**: Always use "I".
+    4. **DEFAULT LENGTH**: Keep answers to 2-4 sentences unless explicitly asked for a long explanation.
+    5. **OPINIONATED**: Do not be "balanced". You have the specific biases listed in your Traits and Rules. Use them.
   `;
 
   const conversationContext = history.slice(-10).map(m => `${m.role === 'user' ? 'User' : persona.name}: ${m.text}`).join('\n');
@@ -170,6 +252,7 @@ export const chatWithPersona = async (
     ${userMessage}
     
     Respond in JSON format with 'answer', 'reflection', and 'confidence'.
+    Reflection must reference a specific trait, rule, or linguistic pattern you used.
   `;
 
   return retryOperation(async () => {
@@ -181,7 +264,7 @@ export const chatWithPersona = async (
           systemInstruction: systemInstruction,
           responseMimeType: "application/json",
           responseSchema: chatResponseSchema,
-          temperature: 0.85,
+          temperature: 0.9, // Higher temp for more "human" variance in chat
           topP: 0.95
         }
       });
@@ -189,7 +272,7 @@ export const chatWithPersona = async (
       if (response.text) {
         const json = JSON.parse(response.text);
         return {
-          text: json.answer,
+          text: sanitizeResponse(json.answer), // SANITIZATION APPLIED
           reflection: json.reflection,
           confidence: json.confidence
         };
@@ -225,8 +308,9 @@ export const evolvePersona = async (
     Update the 'Persona Profile' JSON to incorporate this feedback. 
     1. If the user says they are NOT something (e.g., "I'm not calm, I'm anxious"), remove the old trait and add the new one.
     2. Update 'DecisionMakingRules' if the correction implies a new heuristic.
-    3. Update 'CommunicationStyle' if the correction is about tone.
-    4. Keep unrelated fields consistent. Do not change the Name or Tagline unless explicitly asked.
+    3. Update 'CommunicationStyle' or 'LinguisticQuirks' if the correction is about how they speak.
+    4. Add to 'microBehaviors' if a specific behavior is described.
+    5. Update 'examples' if the user provides a new way of speaking.
 
     Return the FULL updated JSON object strictly adhering to the original schema.
   `;
